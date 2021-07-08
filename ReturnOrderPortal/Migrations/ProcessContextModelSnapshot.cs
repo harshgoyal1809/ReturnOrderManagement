@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ReturnOrderPortal.DataContext;
+using Return_Order_Portal.DataContext;
 
-namespace ReturnOrderPortal.Migrations
+namespace Return_Order_Portal.Migrations
 {
     [DbContext(typeof(ProcessContext))]
     partial class ProcessContextModelSnapshot : ModelSnapshot
@@ -15,11 +15,11 @@ namespace ReturnOrderPortal.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ReturnOrderPortal.Models.ProcessResponse", b =>
+            modelBuilder.Entity("Return_Order_Portal.Models.ProcessResponse", b =>
                 {
                     b.Property<int>("RequestId")
                         .HasColumnType("int");
@@ -27,15 +27,15 @@ namespace ReturnOrderPortal.Migrations
                     b.Property<DateTime>("DateOfDelivery")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("PackagingandDeliveryCharge")
-                        .HasColumnType("float");
+                    b.Property<int>("PackagingAndDeliveryCharge")
+                        .HasColumnType("int");
 
-                    b.Property<double>("ProcessingCharge")
-                        .HasColumnType("float");
+                    b.Property<int>("ProcessingCharge")
+                        .HasColumnType("int");
 
                     b.HasKey("RequestId");
 
-                    b.ToTable("ProcessData");
+                    b.ToTable("ProcessDb");
                 });
 #pragma warning restore 612, 618
         }

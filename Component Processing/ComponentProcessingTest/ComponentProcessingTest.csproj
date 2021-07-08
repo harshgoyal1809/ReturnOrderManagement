@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Component Processing\Component_Processing.csproj" />
+    <ProjectReference Include="..\Component Processing\ComponentProcessing.csproj" />
   </ItemGroup>
 
 </Project>

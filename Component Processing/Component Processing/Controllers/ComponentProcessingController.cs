@@ -35,7 +35,7 @@ namespace Component_Processing.Controllers
 
             try
             {
-                return Ok(_repo.GetResponse(processRequest.Name, processRequest.ContactNumber, processRequest.CreditCardNumber,
+                return Ok(_repo.GetResponse(processRequest.Name, processRequest.ContactNumber, processRequest.CreditCardNumber, processRequest.CreditLimit,
                     processRequest.ComponentType, processRequest.ComponentName, processRequest.Quantity, processRequest.IsPriorityRequest));
             }
             catch (Exception e)
@@ -56,7 +56,8 @@ namespace Component_Processing.Controllers
             }
             catch (Exception e)
             {
-                return NotFound(e.Message);
+                _log4net.Error("Process Request Not Found by User"+e.Message);
+                return NotFound("Your data is not found");
             }
         }
     }

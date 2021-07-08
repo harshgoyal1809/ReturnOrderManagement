@@ -1,26 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReturnOrderPortal.Models;
+using Return_Order_Portal.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ReturnOrderPortal.DataContext
+namespace Return_Order_Portal.DataContext
 {
     public class ProcessContext : DbContext
     {
         public ProcessContext(DbContextOptions<ProcessContext> options) : base(options)
         {
         }
-        public DbSet<ProcessResponse> ProcessData { get; set; }
+        public DbSet<ProcessResponse> ProcessDb { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             //modelBuilder.Entity<ProcessResponse>()
-              //  .HasNoKey();
+            //  .HasNoKey();
         }
-
-
     }
 }

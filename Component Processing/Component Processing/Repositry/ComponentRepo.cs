@@ -1,4 +1,5 @@
 ﻿using Component_Processing.Models;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,22 @@ namespace Component_Processing.Repositry
 {
     public class ComponentRepo : IComponentRepo
     {
+        private IConfiguration _config;
 
-        public ProcessResponse GetResponse(string Name, long ContactNumber, long CreditCardNumber, string ComponentType, string ComponentName, int Quantity, bool IsPriority)
+        public ComponentRepo(IConfiguration config)
+        {
+            this._config = config;
+        }
+
+        public ComponentRepo()
+        {
+        }
+
+        public ProcessResponse GetResponse(string Name, long ContactNumber, long CreditCardNumber, double CreditLimit, string ComponentType, string ComponentName, int Quantity, bool IsPriority)
         {
             ProcessRequest request = new ProcessRequest();
             ProcessResponse res = new ProcessResponse();
-            string uri = string.Format("https://localhost:44345/getPackagingDeliveryCharge/{0}/{1}", ComponentType, Quantity);
+            string uri = string.Format(_config["Links:PackageAndDelivery"] + "/getPackagingDeliveryCharge/{0}/{1}", ComponentType, Quantity);
             if (ComponentType == "Integral")
             {
                 if (IsPriority == false)
@@ -96,7 +107,7 @@ namespace Component_Processing.Repositry
 
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                string uri = string.Format("https://localhost:44335/GetpaymentDetails/{0}/{1}/{2}/{3}", RequestId, CreditCardNumber, CreditLimit, ProcessingCharge);
+                string uri = string.Format(_config["Links:Payment"] + "/GetpaymentDetails/{0}/{1}/{2}/{3}", RequestId, CreditCardNumber, CreditLimit, ProcessingCharge);
 
                 var cost = client.GetAsync(uri).Result;
                 if (cost.IsSuccessStatusCode)
@@ -106,10 +117,11 @@ namespace Component_Processing.Repositry
                     balance = responseString2;
 
                 }
-                return ("Your Confirmation is Successful and your Balance is  " + balance);
+                return balance;
             }
 
 
         }
+        
     }
 }

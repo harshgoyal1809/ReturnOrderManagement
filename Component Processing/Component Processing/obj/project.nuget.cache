@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GyMHoVikCZvOSs/UQOWjUdfZAwKVaniP57BzTOoXA6FxVWAE5rajPcrMbNOez2CLZZWV/cFkT1Qvm/4QFp1Byw==",
+  "dgSpecHash": "PI0mFXo+0Wc+PElqZVFUeQrV3AJ8yWKTXc9JQAQ/xNaZy0KUdQ9TEDRh5SU2HvNEycedBmus+Gt9sIJ9jfAgLw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\Component_Processing.csproj",
+  "projectFilePath": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\ComponentProcessing.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\HARSH GOYAL\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\HARSH GOYAL\\.nuget\\packages\\log4net\\2.0.12\\log4net.2.0.12.nupkg.sha512",

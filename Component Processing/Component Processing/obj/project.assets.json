@@ -5798,7 +5798,8 @@
       "Microsoft.Extensions.Logging.Log4Net.AspNetCore >= 5.0.3",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.10.8",
       "Newtonsoft.Json >= 13.0.1",
-      "Swashbuckle.AspNetCore >= 5.6.3"
+      "Swashbuckle.AspNetCore >= 5.6.3",
+      "log4net >= 2.0.12"
     ]
   },
   "packageFolders": {
@@ -5808,9 +5809,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\Component_Processing.csproj",
-      "projectName": "Component_Processing",
-      "projectPath": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\Component_Processing.csproj",
+      "projectUniqueName": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\ComponentProcessing.csproj",
+      "projectName": "ComponentProcessing",
+      "projectPath": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\ComponentProcessing.csproj",
       "packagesPath": "C:\\Users\\HARSH GOYAL\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\HARSH GOYAL\\source\\repos\\Component Processing\\Component Processing\\obj\\",
       "projectStyle": "PackageReference",
@@ -5878,6 +5879,10 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[5.6.3, )"
+          },
+          "log4net": {
+            "target": "Package",
+            "version": "[2.0.12, )"
           }
         },
         "imports": [

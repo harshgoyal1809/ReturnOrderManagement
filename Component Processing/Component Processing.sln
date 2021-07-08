@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Component_Processing", "Component Processing\Component_Processing.csproj", "{76A56778-4B52-4A76-8E8D-44D2D47CBD3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentProcessing", "Component Processing\ComponentProcessing.csproj", "{76A56778-4B52-4A76-8E8D-44D2D47CBD3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentProcessingTest", "ComponentProcessingTest\ComponentProcessingTest.csproj", "{F7734AC0-A936-4F01-9041-1DE849F98045}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentProcessingTest", "ComponentProcessingTest\ComponentProcessingTest.csproj", "{F7734AC0-A936-4F01-9041-1DE849F98045}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

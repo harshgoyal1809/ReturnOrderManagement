@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v5.0": {
       "ComponentProcessingTest/1.0.0": {
         "dependencies": {
-          "Component_Processing": "1.0.0",
+          "ComponentProcessing": "1.0.0",
           "Microsoft.NET.Test.Sdk": "16.10.0",
           "Moq": "4.16.1",
           "NUnit": "3.13.2",
@@ -1313,7 +1313,7 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "Component_Processing/1.0.0": {
+      "ComponentProcessing/1.0.0": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "5.0.7",
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.7",
@@ -1321,10 +1321,11 @@
           "Microsoft.Extensions.Logging.Log4Net.AspNetCore": "5.0.3",
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.10.8",
           "Newtonsoft.Json": "13.0.1",
-          "Swashbuckle.AspNetCore": "5.6.3"
+          "Swashbuckle.AspNetCore": "5.6.3",
+          "log4net": "2.0.12"
         },
         "runtime": {
-          "Component_Processing.dll": {}
+          "ComponentProcessing.dll": {}
         }
       }
     }
@@ -2147,7 +2148,7 @@
       "path": "system.xml.xmlserializer/4.3.0",
       "hashPath": "system.xml.xmlserializer.4.3.0.nupkg.sha512"
     },
-    "Component_Processing/1.0.0": {
+    "ComponentProcessing/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

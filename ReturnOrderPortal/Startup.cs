@@ -1,19 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ReturnOrderPortal.DataContext;
+using Return_Order_Portal.DataContext;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ReturnOrderPortal
+namespace Return_Order_Portal
 {
     public class Startup
     {
@@ -24,18 +23,32 @@ namespace ReturnOrderPortal
 
         public IConfiguration Configuration { get; }
 
-        
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllersWithViews();
-            services.AddDbContextPool<ProcessContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("DbContextConnection1")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-        }
+            //Added
+            services.AddDbContext<ProcessContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("MyCon")));
+            //services.AddTransient<IReturnOrderPortalRepo, ReturnOrderPortalRepo>();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
-        
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env , ILoggerFactory loggerFactory)
+            services.AddSession(option =>
+            {
+                option.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+            services.AddMvc();
+            //till here
+        }   
+       
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -43,15 +56,19 @@ namespace ReturnOrderPortal
             }
             else
             {
-                app.UseStatusCodePagesWithRedirects("/Error/{0}");
-       
-                app.UseHsts();
+                app.UseExceptionHandler("/Home/Error");
             }
+
+
+            //Added
+            app.UseSession();
+
             loggerFactory.AddLog4Net();
-            app.UseHttpsRedirection();
+            //till here
             app.UseStaticFiles();
 
             app.UseRouting();
+
 
             app.UseAuthorization();
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace ReturnOrderPortal.Models
+namespace Return_Order_Portal.Models
 {
     public class ErrorViewModel
     {

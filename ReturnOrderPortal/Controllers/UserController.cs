@@ -1,34 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Formatting;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Helpers;
-using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ReturnOrderPortal.DataContext;
-using ReturnOrderPortal.Models;
+using Return_Order_Portal.DataContext;
+using Return_Order_Portal.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ReturnOrderPortal.Controllers
+namespace Return_Order_Portal.Controllers
 {
-
     public class UserController : Controller
     {
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(UserController));
         static string TokenForLogin;
         private readonly ProcessContext db;
-        public static ProcessResponse Response = new ProcessResponse();
+        public static ProcessRequest Req = new ProcessRequest();
+        public static ProcessResponse Res = new ProcessResponse();
         private IConfiguration _config;
 
-       
+
+
         public UserController(ProcessContext context, IConfiguration config)
         {
             db = context;
@@ -38,28 +34,28 @@ namespace ReturnOrderPortal.Controllers
         public IActionResult Login()
         {
             _log4net.Info("Login initiated");
-            
-                
-                var user = new User();
-           
+
+
+            var user = new Login();
+
             return View("Login", user);
-            
-           
+
+
 
         }
 
 
         //Token is being generated using Authorization MicroService
-        public ActionResult Authentication(User user)
+        public ActionResult Authentication(Login user)
         {
             try
             {
 
 
                 _log4net.Info("Authentication initiated");
-                // TokenForLogin = GetToken("http://localhost:29473/api/Auth", user);
-                TokenForLogin = GetToken(_config["Links:AuthorizationAPI"] + "/Auth", user);
-                _log4net.Info("Authorization URI invoked http://52.141.211.78/api");
+             
+                TokenForLogin = GetToken(_config["Links:AuthorizationMicroService"] + "/Auth", user);
+             
                 _log4net.Info("Token recieved From Authentication MicroService");
 
                 if (TokenForLogin == null)
@@ -68,22 +64,19 @@ namespace ReturnOrderPortal.Controllers
                     ViewBag.Message = String.Format("Invalid Username Or Password");
                     return View("Login", user);
                 }
-                //return Content("Login Successful");
+             
                 _log4net.Info("Authentication Successful And Login Completed");
                 var ComponentModel = new ProcessRequest();
+                ViewBag.Name = user.Username;
                 return View("ComponentProcessing");
             }
             catch (Exception ex)
             {
                 _log4net.Info("Exception In Authentication ActionResult");
-                return View("Error1",ex);
+                return View("Error1", ex);
             }
         }
 
-
-
-
-        
         //Form is being filled by the user and the form data is being sent to Component Microservice
         public async Task<ActionResult> ComponentProcessing(ProcessRequest component)
         {
@@ -91,33 +84,34 @@ namespace ReturnOrderPortal.Controllers
             {
 
 
-                _log4net.Info("ComponentProcessing initiated");
+                _log4net.Info("ComponentProcessingMicroservice initiated");
                 string Results;
                 using (var client = new HttpClient())
                 {
                     ProcessRequest components = new ProcessRequest
                     {
-                        Name = component.Name,
+                        Name = component.ComponentName,
                         ContactNumber = component.ContactNumber,
                         CreditCardNumber = component.CreditCardNumber,
+                        CreditLimit = component.CreditLimit,
                         ComponentType = component.ComponentType,
                         ComponentName = component.ComponentName,
                         Quantity = component.Quantity,
                         IsPriorityRequest = component.IsPriorityRequest
                     };
+                    Req = components;
+                   
 
-                    // client.DefaultRequestHeaders.Accept.Clear();
                     _log4net.Info("Token added to header");
                     client.DefaultRequestHeaders.Add("Authorization", "Bearer " + TokenForLogin);
-                    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                 
                     var myJSON = JsonConvert.SerializeObject(components);
+                    var httpContent = new StringContent(myJSON, Encoding.UTF8, "application/json");
 
-
-                    string uri = string.Format("https://localhost:44308//api/ComponentProcessing/GetResponse?json={0}", myJSON);
-                   // string uri = string.Format(_config["Links:ComponentProcessing"] + "/ComponentProcessing/GetResponse?json={0}", myJSON);
-                    _log4net.Info("Component Microservice uri invoked http://52.154.250.90/api");
-                    HttpResponseMessage response = await client.GetAsync(uri);
-                    if (response.IsSuccessStatusCode)
+                
+                    _log4net.Info("Component Microservice uri invoked at /ComponentProcessing/GetResponse");
+                    var response = await client.PostAsync(_config["Links:ComponentMicroservice"] +"/ComponentProcessing/GetResponse", httpContent);
+                    if (response.Content!=null)
                     {
                         Results = await response.Content.ReadAsStringAsync();
                     }
@@ -127,10 +121,11 @@ namespace ReturnOrderPortal.Controllers
                     }
                 }
                 _log4net.Info("Response Received From Component Microservice");
-                Response = JsonConvert.DeserializeObject<ProcessResponse>(Results);
+                Res = JsonConvert.DeserializeObject<ProcessResponse>(Results);
+                Res.RequestId = db.ProcessDb.Count() + 1;
+                //Res.RequestId = 1;
 
-
-                return View("ProcessResponse", Response);
+                return View("ProcessResponse", Res);
             }
             catch (Exception ex)
             {
@@ -141,44 +136,51 @@ namespace ReturnOrderPortal.Controllers
 
         }
 
-        //User will confirm if he wants to Confirm the payment or not
+
         public async Task<ActionResult> Confirmation()
         {
             try
             {
+
+
                 _log4net.Info("Payment Confirmation initiated");
                 Submission res = new Submission()
                 {
-                    Result = "True"
+                    Result = 0
                 };
-                string name = "";
+             
 
-                dynamic details = "";
-                var abc = JsonConvert.SerializeObject(res);
-                var data = new StringContent(abc, Encoding.UTF8, "application/json");
-
+             
+                string Result;
+               
+                string uri = string.Format(_config["Links:ComponentMicroservice"]+"/ComponentProcessing/CompleteProcessing/{0},{1},{2},{3}", Res.RequestId, Req.CreditCardNumber, Req.CreditLimit, Res.ProcessingCharge);
                 using (var client = new HttpClient())
                 {
-
+                    
                     _log4net.Info("Confirmation sent to Component Microservice For Payment");
-                    var response = await client.PostAsync("https://localhost:44308/api/ComponentProcessing/CompleteProcessing", data);
-                    //var response = await client.PostAsync(_config["Links:ComponentProcessing"] + "/ComponentProcessing", data);
+                     var response = await client.GetAsync(uri);
+             
 
-                    _log4net.Info("Component Microservice uri invoked http://52.154.250.90/api");
+                    _log4net.Info("Component Microservice uri invoked p/ComponentProcessing/CompleteProcessing");
 
-
-                    name = response.Content.ReadAsStringAsync().Result;
+                    if (response.Content != null)
+                        Result = await response.Content.ReadAsStringAsync();
+                    else
+                        Result = null;
 
 
                 }
+                res.Result = int.Parse(JsonConvert.DeserializeObject<string>(Result));
+                if (res.Result < 0)
+                    return View("Failed");
                 _log4net.Info("Success or failed Message received from Component Moicroservice");
-                string x = (string)name;
-                if (x == "Success")
+         
+                if (Result !=null)
                 {
                     _log4net.Info("Respose added to db ");
-                    db.ProcessData.Add(Response);
+                    db.ProcessDb.Add(Res);
                     db.SaveChanges();
-                    return View("Confirmation",Response);
+                    return View("Confirmation", res);
                 }
                 else
                     return View("Failed");
@@ -195,10 +197,9 @@ namespace ReturnOrderPortal.Controllers
 
 
 
-
-        static string GetToken(string url, User user)
+        static string GetToken(string url, Login user)
         {
-           
+
             var json = JsonConvert.SerializeObject(user);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -209,6 +210,13 @@ namespace ReturnOrderPortal.Controllers
                 dynamic details = JObject.Parse(name);
                 return details.token;
             }
+        }
+
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "User");
         }
     }
 }

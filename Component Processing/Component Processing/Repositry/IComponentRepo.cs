@@ -8,7 +8,8 @@ namespace Component_Processing.Repositry
 {
     public interface IComponentRepo
     {
-        public ProcessResponse GetResponse(string Name, long ContactNumber, long CreditCardNumber, string ComponentType, string ComponentName, int Quantity, bool IsPriority);
+        public ProcessResponse GetResponse(string Name, long ContactNumber, long CreditCardNumber, double CreditLimit, string ComponentType, string ComponentName, int Quantity, bool IsPriority);
         public string GetCompletion(int RequestId, long CreditCardNumber, double CreditLimit, double ProcessingCharge);
+        
     }
 }
